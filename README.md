@@ -25,33 +25,38 @@ This will load the game with its default settings.
 
 ## Customization
 
-You can customize the game by adding URL parameters to the script's `src` attribute. This allows you to change the appearance and placement of the game to fit your world perfectly.
+You can customize the game using **HTML script attributes** (recommended) or legacy **URL query parameters** (for backwards compatibility). This allows you to change the appearance and placement of the game to fit your world perfectly.
 
+**HTML Script Attributes (Recommended):**
 ```html
-<!-- Example of a customized Gomoku game -->
+<script src="https://banter-gomoku.firer.at/Gomoku.js" boardPosition="0 1.5 -3" boardScale="0.8" boardSize="19"></script>
+```
+
+**Legacy URL Query Parameters:**
+```html
 <script src="https://banter-gomoku.firer.at/Gomoku.js?boardPosition=0+1.5+-3&boardScale=0.8&boardSize=19"></script>
 ```
 
-### Available Parameters
+### Available Attributes / Parameters
 
-| Parameter         | Type        | Default Value         | Description                                                                                                   |
+| Parameter / Attribute | Type        | Default Value         | Description                                                                                                   |
 |-------------------|-------------|-----------------------|---------------------------------------------------------------------------------------------------------------|
 | `instance`        | `string`    | (current URL)         | A unique ID for the game instance. Use this if you have multiple Gomoku boards in the same world.             |
-| `boardSize`       | `integer`   | `15`                  | The size of the board (e.g., `15` for 15x15, `19` for 19x19).                                                 |
-| `hideUI`          | `boolean`   | `false`               | Set to `true` to hide the reset button.                                                                       |
-| `hideBoard`       | `boolean`   | `false`               | Hides the board geometry.                                                                                     |
-| `useCustomModels` | `boolean`   | `false`               | Use GLB models for pieces.                                                                                    |
+| `boardSize` / `board-size`       | `integer`   | `15`                  | The size of the board (e.g., `15` for 15x15, `19` for 19x19).                                                 |
+| `hideUI` / `hide-ui`          | `boolean`   | `false`               | Set to `true` to hide the reset button.                                                                       |
+| `hideBoard` / `hide-board`       | `boolean`   | `false`               | Hides the board geometry.                                                                                     |
+| `useCustomModels` / `use-custom-models` | `boolean`   | `false`               | Use GLB models for pieces.                                                                                    |
 | `lighting`        | `string`    | `unlit`               | Shader type: 'lit' or 'unlit'.                                                                                |
-| `addLights`       | `boolean`   | `true`                | Add directional light for lit mode.                                                                           |
-| `useAOBaking`     | `boolean`   | `false`               | Bake Ambient Occlusion on board geometry.                                                                     |
-| `boardPosition`   | `Vector3`   | `0 1.5 0`             | The position of the game board in your world (X Y Z, space-separated).                                        |
-| `boardRotation`   | `Vector3`   | `0 0 0`               | The rotation of the game board in Euler angles (X Y Z, space-separated).                                      |
-| `boardScale`      | `Vector3`   | `1 1 1`               | The scale of the game board (X Y Z, space-separated).                                                         |
-| `resetPosition`   | `Vector3`   | `0 -1.2 0`            | The position of the reset button relative to the board.                                                       |
-| `resetRotation`   | `Vector3`   | `0 0 0`               | The rotation of the reset button.                                                                             |
-| `resetScale`      | `Vector3`   | `1 1 1`               | The scale of the reset button.                                                                                |
+| `addLights` / `add-lights`       | `boolean`   | `true`                | Add directional light for lit mode.                                                                           |
+| `useAOBaking` / `use-ao-baking`     | `boolean`   | `false`               | Bake Ambient Occlusion on board geometry.                                                                     |
+| `boardPosition` / `position` / `board-position`   | `Vector3`   | `0 1.5 0`             | The position of the game board in your world (X Y Z, space-separated).                                        |
+| `boardRotation` / `rotation` / `board-rotation`   | `Vector3`   | `0 0 0`               | The rotation of the game board in Euler angles (X Y Z, space-separated).                                      |
+| `boardScale` / `scale` / `board-scale`      | `Vector3`   | `1 1 1`               | The scale of the game board (X Y Z, space-separated).                                                         |
+| `resetPosition` / `reset-position`   | `Vector3`   | `0 -1.2 0`            | The position of the reset button relative to the board.                                                       |
+| `resetRotation` / `reset-rotation`   | `Vector3`   | `0 0 0`               | The rotation of the reset button.                                                                             |
+| `resetScale` / `reset-scale`      | `Vector3`   | `1 1 1`               | The scale of the reset button.                                                                                |
 
-**Note on Vector3:** `Vector3` parameters must be formatted with spaces between the numbers (e.g., `1+1.5+2`).
+**Note on Vector3:** When using legacy URL query parameters, coordinates must be URL-encoded or formatted with plus signs (e.g., `boardPosition=0+1.5+-3`). When using HTML script attributes, you can write them normally with spaces (e.g., `boardPosition="0 1.5 -3"`).
 
 ## How It Works
 
