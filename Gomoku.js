@@ -628,7 +628,7 @@
                     
                     if (slot.sphere) {
                         slot.sphere.SetActive(true);
-                        const mat = slot.sphere.GetComponent(BS.ComponentType.BanterMaterial);
+                        const mat = slot.sphere.GetComponent((BS.ComponentType.Material ?? BS.ComponentType.BanterMaterial));
                         if (mat) {
                             let colorHex = (cell === 1) ? COLORS.player1 : COLORS.player2;
                             if (isWin) {
