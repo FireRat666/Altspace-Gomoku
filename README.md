@@ -1,31 +1,20 @@
-# Gomoku (Five in a Row) for Banter
+# Gomoku
 
-This is a fully multiplayer and synchronized version of the classic game Gomoku (also known as Five in a Row) designed to be easily embedded into any Banter world.
+A synced multiplayer upright Gomoku (five in a row) board. Made for **SideQuest / AltspaceVR** worlds, and it also works in **Banter**.
 
-The game state is synced across all players in the space using Banter's shared state properties, so everyone sees the same game board and can take turns playing.
+There is no server: players stay in sync through the space's shared state, and the game is plain static files served from <https://gomoku.firer.at>.
+
+To try it, open <https://gomoku.firer.at> in Altspace or Banter.
 
 ## Features
 
-- **Fully Multiplayer:** Play with anyone in your Banter space.
-- **Synchronized State:** The game board is always in sync for all players.
-- **Customizable:** Easily change the board's size, position, rotation, and scale.
-- **Simple to Embed:** Just add one line of code to your `index.html`.
-- **Reset Button:** A built-in reset button allows players to start a new game at any time.
+- Any board size
+- Reset button
+- Several independent boards in one world
 
-## How to Use
+## Add it to an Altspace world (snippet)
 
-To add the Gomoku game to your Banter space, simply add the following script tag to your `index.html` file.
-
-```html
-<!-- Add this to the <body> of your index.html -->
-<script src="https://banter-gomoku.firer.at/Gomoku.js"></script>
-```
-
-This will load the game with its default settings.
-
-## SideQuest / Altspace Creator SDK (Snippet)
-
-In a SideQuest/Altspace Creator SDK world, add an empty GameObject at the origin, click **Add Component > BS > Snippet** and type `gomoku`. Or paste it into `Assets/WebRoot/index.html` between the snippet section comments:
+In a Creator SDK world, add an empty GameObject at the origin, click **Add Component > BS > Snippet** and type `gomoku`. Or paste this into `Assets/WebRoot/index.html`, between the snippet section comments:
 
 ```html
 <!-- snippet section -->
@@ -50,51 +39,62 @@ In a SideQuest/Altspace Creator SDK world, add an empty GameObject at the origin
 <!-- end snippet section -->
 ```
 
-- Settings are the same as the script attributes above. `position` and `rotation` are Unity world values, and `scale` can be a single number.
 - Each placement is its own game. Its sync id is `room`, or the placement's own id when `room` is empty. Give placements the same `room` to share one game.
-- An empty setting uses the game's default.
+- `position` and `rotation` are Unity world values, and `scale` can be a single number. The other settings are listed under [Settings](#settings). An empty setting uses the default.
 - The Scene-view gizmo shows the board at its default size; it does not follow `scale`.
 - Unity reads the snippet section as XML: quote every attribute, close every element, and write `&` as `&amp;`.
 
-## Customization
+## Add it with a script tag
 
-You can customize the game using **HTML script attributes** (recommended) or legacy **URL query parameters** (for backwards compatibility). This allows you to change the appearance and placement of the game to fit your world perfectly.
+This works in an Altspace world's `Assets/WebRoot/index.html` (outside the snippet section) and in a Banter space's HTML:
 
-**HTML Script Attributes (Recommended):**
 ```html
-<script src="https://banter-gomoku.firer.at/Gomoku.js" boardPosition="0 1.5 -3" boardScale="0.8" boardSize="19"></script>
+<script src="https://gomoku.firer.at/Gomoku.js" position="0 1.5 -3" scale="0.8" board-size="19"></script>
 ```
 
-**Legacy URL Query Parameters:**
+For more than one board in a space, give each one its own `instance`:
+
 ```html
-<script src="https://banter-gomoku.firer.at/Gomoku.js?boardPosition=0+1.5+-3&boardScale=0.8&boardSize=19"></script>
+<script src="https://gomoku.firer.at/Gomoku.js" instance="board1" position="-2 1.1 -2"></script>
+<script src="https://gomoku.firer.at/Gomoku.js" instance="board2" position="2 1.1 -2"></script>
 ```
 
-### Available Attributes / Parameters
+Settings can also go in the URL, as in older setups: `https://gomoku.firer.at/Gomoku.js?boardPosition=0+1.1+-2&boardScale=0.8`.
 
-| Parameter / Attribute | Type        | Default Value         | Description                                                                                                   |
-|-------------------|-------------|-----------------------|---------------------------------------------------------------------------------------------------------------|
-| `instance`        | `string`    | (current URL)         | A unique ID for the game instance. Use this if you have multiple Gomoku boards in the same world.             |
-| `boardSize` / `board-size`       | `integer`   | `15`                  | The size of the board (e.g., `15` for 15x15, `19` for 19x19).                                                 |
-| `hideUI` / `hide-ui`          | `boolean`   | `false`               | Set to `true` to hide the reset button.                                                                       |
-| `hideBoard` / `hide-board`       | `boolean`   | `false`               | Hides the board geometry.                                                                                     |
-| `useCustomModels` / `use-custom-models` | `boolean`   | `false`               | Use GLB models for pieces.                                                                                    |
-| `lighting`        | `string`    | `unlit`               | Shader type: 'lit' or 'unlit'.                                                                                |
-| `addLights` / `add-lights`       | `boolean`   | `true`                | Add directional light for lit mode.                                                                           |
-| `useAOBaking` / `use-ao-baking`     | `boolean`   | `false`               | Bake Ambient Occlusion on board geometry.                                                                     |
-| `boardPosition` / `position` / `board-position`   | `Vector3`   | `0 1.5 0`             | The position of the game board in your world (X Y Z, space-separated).                                        |
-| `boardRotation` / `rotation` / `board-rotation`   | `Vector3`   | `0 0 0`               | The rotation of the game board in Euler angles (X Y Z, space-separated).                                      |
-| `boardScale` / `scale` / `board-scale`      | `Vector3`   | `1 1 1`               | The scale of the game board (X Y Z, space-separated).                                                         |
-| `resetPosition` / `reset-position`   | `Vector3`   | `0 -1.2 0`            | The position of the reset button relative to the board.                                                       |
-| `resetRotation` / `reset-rotation`   | `Vector3`   | `0 0 0`               | The rotation of the reset button.                                                                             |
-| `resetScale` / `reset-scale`      | `Vector3`   | `1 1 1`               | The scale of the reset button.                                                                                |
+## Settings
 
-**Note on Vector3:** When using legacy URL query parameters, coordinates must be URL-encoded or formatted with plus signs (e.g., `boardPosition=0+1.5+-3`). When using HTML script attributes, you can write them normally with spaces (e.g., `boardPosition="0 1.5 -3"`).
+| Setting | Also accepted | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `instance` |  | page URL | Sync id. Boards with the same id share one game. In a snippet, use `room` instead. |
+| `boardPosition` | `position`, `board-position` | `0 1.5 0` | Board position (x y z). |
+| `boardRotation` | `rotation`, `board-rotation` | `0 0 0` | Board rotation in degrees (x y z). |
+| `boardScale` | `scale`, `board-scale` | `1` | Board scale: one number, or x y z. |
+| `boardSize` | `board-size` | `15` | Grid size, e.g. 15 or 19. |
+| `resetPosition` | `reset-position` | `0 -1.2 0` | Reset button position, relative to the board. |
+| `resetRotation` | `reset-rotation` | `0 0 0` | Reset button rotation, relative to the board. |
+| `resetScale` | `reset-scale` | `1` | Reset button scale. |
+| `hideUI` | `hide-ui` | `false` | `true` hides the buttons. |
+| `hideBoard` | `hide-board` | `false` | `true` hides the board, e.g. to use your own. |
+| `useCustomModels` | `use-custom-models` | `false` | `true` uses the GLB models in `Models/` for the pieces instead of built-in shapes. |
+| `lighting` |  | `unlit` | `lit` uses materials that react to scene lights. |
+| `addLights` | `add-lights` | `true` | With `lighting="lit"`, adds a directional light. Set `false` if the world has its own. |
+| `useAOBaking` | `use-ao-baking` | `false` | Bakes ambient occlusion onto the board. |
 
-## How It Works
+Settings can be written as `boardPosition` or `board-position`; the snippet uses the hyphenated form.
 
-The game logic is contained within `Gomoku.js`. It uses the Banter SDK (`BS`) to create and manage all the visual elements of the game, including the board, the grid lines, and the game pieces (stones).
+## How to play
 
-Player moves are handled by simulating the game state locally and then sending the new state to all players using `BS.BanterScene.GetInstance().SetPublicSpaceProps()`. This function stores the game's state (the board layout, current player, and win condition) in a shared JSON object.
+1. Black moves first.
+2. Click an intersection to place a stone.
+3. Five in a row (across, up or diagonally) wins.
 
-When any player's client receives an update to this shared state via the `space-state-changed` event, it re-renders the board to reflect the latest move, ensuring everyone stays in sync.
+## Files
+
+- `Gomoku.js`: the game.
+- `Models/`: stone models for `use-custom-models`.
+- `snippet.js`, `snippet.html`: the Creator SDK snippet and its definition.
+- `index.html`: a test page with a floor and the game.
+
+## License
+
+GPL-3.0. See [LICENSE](LICENSE).
