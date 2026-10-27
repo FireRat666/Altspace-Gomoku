@@ -9,7 +9,7 @@
         boardPosition: [0, 1.5, 0],
         boardRotation: [0, 0, 0],
         boardScale: [1, 1, 1],
-        resetPosition: [0, -1.2, 0],
+        resetPosition: [0, 0, 0], // 0 0 0 = automatic: just below the board
         resetRotation: [0, 0, 0],
         resetScale: [1, 1, 1],
         instance: window.location.href.split('?')[0],
@@ -24,7 +24,11 @@
     };
 
     const COLORS = {
-        board: '#D2B48C',    // Wooden Board Color
+        board: '#DCB46C',    // Wooden Board Color
+        boardEdge: '#7A4F24', // Darker wood round the edge
+        lines: '#2B1D0E',    // Grid lines and star points
+        stone1: '#1C1C1C',   // Plain black stone (without custom models)
+        stone2: '#F4F1E8',   // Plain white stone (without custom models)
         player1: '#000000',  // Black stone
         player2: '#FFFFFF',  // White stone
         empty: '#FFFFFF',    // Empty slot (will be invisible)
@@ -157,6 +161,8 @@
         config.resetPosition = parseVector3(getParam('resetPosition'), config.resetPosition);
         config.resetRotation = parseVector3(getParam('resetRotation'), config.resetRotation);
         config.scoreboardPosition = parseVector3(getParam('scoreboardPosition'), null);
+        // 0 0 0 means automatic (the turn sign's default spot)
+        if (config.scoreboardPosition && config.scoreboardPosition.every(n => n === 0)) config.scoreboardPosition = null;
         config.scoreboardRotation = parseVector3(getParam('scoreboardRotation'), null);
         config.scoreboardScale = parseVector3(getParam('scoreboardScale'), null);
     }
@@ -353,6 +359,10 @@
             await boardVisuals.AddComponent(new BS.Transform());
 
             // Create the board base
+            // Darker wooden edge, a little bigger than the board and just behind it
+            await createBanterObject(boardVisuals, BS.GeometryType.BoxGeometry,
+                { width: boardDimension + gap + 0.04, height: boardDimension + gap + 0.04, depth: 0.03 },
+                COLORS.boardEdge, new BS.Vector3(0, 0, -0.025));
             const boardBase = await createBanterObject(boardVisuals, BS.GeometryType.BoxGeometry,
                 { width: boardDimension + gap, height: boardDimension + gap, depth: boardThickness },
                 COLORS.board, new BS.Vector3(0, 0, -boardThickness / 2));
@@ -367,12 +377,19 @@
                 const pos = (i - (rows - 1) / 2) * gap;
                 // Vertical Line
                 await createBanterObject(gridRoot, BS.GeometryType.BoxGeometry,
-                    { width: lineThickness, height: boardDimension, depth: lineThickness },
-                    '#000000', new BS.Vector3(pos, 0, 0.01));
+                    { width: lineThickness, height: boardDimension, depth: 0.002 },
+                    COLORS.lines, new BS.Vector3(pos, 0, 0.001));
                 // Horizontal Line
                 await createBanterObject(gridRoot, BS.GeometryType.BoxGeometry,
-                    { width: boardDimension, height: lineThickness, depth: lineThickness },
-                    '#000000', new BS.Vector3(0, pos, 0.01));
+                    { width: boardDimension, height: lineThickness, depth: 0.002 },
+                    COLORS.lines, new BS.Vector3(0, pos, 0.001));
+            }
+
+            for (const [r, c] of starPoints(rows)) {
+                const dot = await createBanterObject(gridRoot, BS.GeometryType.CylinderGeometry,
+                    { radius: gap * 0.12, height: 0.003 }, COLORS.lines,
+                    new BS.Vector3((c - (cols - 1) / 2) * gap, -(r - (rows - 1) / 2) * gap, 0.0015));
+                dot.GetComponent(BS.ComponentType.Transform).localEulerAngles = new BS.Vector3(90, 0, 0);
             }
 
             // Apply AO Baking if enabled
@@ -454,10 +471,24 @@
             syncState();
         });
 
-        await createTurnBoard(state.root, config.scoreboardPosition || [0, (config.boardSize - 1) * 0.05 + 0.2, 0], config.scoreboardRotation || [0, 0, 0], config.scoreboardScale || [1, 1, 1], 0.8, 0.15, false);
+        await createTurnBoard(state.root, config.scoreboardPosition || [0, config.boardSize * 0.05 + 0.15, 0], config.scoreboardRotation || [0, 0, 0], config.scoreboardScale || [1, 1, 1], 0.8, 0.15, false);
         setupListeners();
         checkForExistingState();
         console.log("Gomoku: Setup Scene Complete");
+    }
+
+    // Star points (the small dots on a Go/Gomoku board): the four corner points, the centre
+    // on odd sizes, and the side points on 19x19 and larger. Returns [row, col] pairs.
+    function starPoints(n) {
+        if (n < 7) return [];
+        const e = n >= 13 ? 3 : 2;
+        const lo = e, hi = n - 1 - e, mid = (n - 1) / 2;
+        const pts = [[lo, lo], [lo, hi], [hi, lo], [hi, hi]];
+        if (n % 2 === 1) {
+            pts.push([mid, mid]);
+            if (n >= 19) pts.push([lo, mid], [hi, mid], [mid, lo], [mid, hi]);
+        }
+        return pts;
     }
 
     function getGeoArgs(type, dims) {
@@ -757,7 +788,7 @@
                         const spherePiece = await createBanterObject(state.piecesRoot, BS.GeometryType.SphereGeometry,
                             { radius: pieceSize },
                             COLORS.player1,
-                            new BS.Vector3(slot.x, slot.y, 0.04),
+                            new BS.Vector3(slot.x, slot.y, 0.002 + pieceSize * 0.3), // Resting on the board
                             false, 1.0, `piece_${r}_${c}`
                         );
                         // Flatten piece
@@ -771,7 +802,7 @@
                         slot.sphere.SetActive(true);
                         const mat = slot.sphere.GetComponent((BS.ComponentType.Material ?? BS.ComponentType.BanterMaterial));
                         if (mat) {
-                            let colorHex = (cell === 1) ? COLORS.player1 : COLORS.player2;
+                            let colorHex = (cell === 1) ? COLORS.stone1 : COLORS.stone2;
                             if (isWin) {
                                 colorHex = COLORS.winHighlight;
                             }
@@ -839,6 +870,10 @@
         config.boardPosition = new BS.Vector3(...config.boardPosition);
         config.boardRotation = new BS.Vector3(...config.boardRotation);
         config.boardScale = new BS.Vector3(...config.boardScale);
+        // A reset position of 0 0 0 means "automatic": just below the board, whatever its size.
+        // Any other value is used as given. The board plate is boardSize * 0.1 wide.
+        const resetIsAuto = !config.resetPosition || config.resetPosition.every(n => n === 0);
+        if (resetIsAuto) config.resetPosition = [0, -(config.boardSize * 0.05 + 0.13), 0];
         config.resetPosition = new BS.Vector3(...config.resetPosition);
         config.resetRotation = new BS.Vector3(...config.resetRotation);
         config.resetScale = new BS.Vector3(...config.resetScale);

@@ -33,9 +33,12 @@ In a Creator SDK world, add an empty GameObject at the origin, click **Add Compo
   hide-board="false"
   use-custom-models="true"
   use-ao-baking="false"
-  reset-position="0 -1.2 0"
+  reset-position="0 0 0"
   reset-rotation="0 0 0"
-  reset-scale="1">
+  reset-scale="1"
+  scoreboard-position="0 0 0"
+  scoreboard-rotation="0 0 0"
+  scoreboard-scale="1">
   <bs-gizmo type="position" attribute="position"/>
   <bs-gizmo type="plane" attribute="position" size="1.5 1.5"/>
 </bs-snippet>
@@ -73,11 +76,11 @@ Settings can also go in the URL, as in older setups: `https://gomoku.firer.at/Go
 | `boardRotation` | `rotation`, `board-rotation` | `0 0 0` | Board rotation in degrees (x y z). |
 | `boardScale` | `scale`, `board-scale` | `1` | Board scale: one number, or x y z. |
 | `boardSize` | `board-size` | `15` | Grid size, e.g. 15 or 19. |
-| `resetPosition` | `reset-position` | `0 -1.2 0` | Reset button position, relative to the board. |
+| `resetPosition` | `reset-position` | `0 0 0` | Reset button position, relative to the board. |
 | `resetRotation` | `reset-rotation` | `0 0 0` | Reset button rotation, relative to the board. |
 | `resetScale` | `reset-scale` | `1` | Reset button scale. |
 | `hideUI` | `hide-ui` | `false` | `true` makes the reset button invisible (it still works and its RESET label stays visible) and hides the turn display. |
-| `scoreboardPosition` | `scoreboard-position` | just above the board | Position of the sign showing whose turn it is, relative to the board. |
+| `scoreboardPosition` | `scoreboard-position` | `0 0 0` | Position of the sign showing whose turn it is, relative to the board. |
 | `scoreboardRotation` | `scoreboard-rotation` | `0 0 0` | Turn sign rotation. |
 | `scoreboardScale` | `scoreboard-scale` | `1` | Turn sign scale. |
 | `turnCooldown` | `turn-cooldown` | `5` | Seconds after a move before the same person can move for the other side, so a double click or an eager player can't take the opponent's turn. Playing both sides alone still works after the wait. `0` turns it off. |
@@ -89,6 +92,8 @@ Settings can also go in the URL, as in older setups: `https://gomoku.firer.at/Go
 | `useAOBaking` | `use-ao-baking` | `false` | Bakes ambient occlusion onto the board. |
 
 Settings can be written as `boardPosition` or `board-position`; the snippet uses the hyphenated form.
+
+A position of `0 0 0` means automatic: the reset button and turn sign sit in their default spots next to the board, which follow `board-size`. Any other value places them relative to the board.
 
 ## How to play
 
