@@ -9,7 +9,7 @@
     <meta name="color-scheme" content="dark">
     <meta name="theme-color" content="#00ff44">
     <title>3D Multiplayer Gomoku (Five in a Row) for AltspaceVR &amp; BanterVR | FireR.at</title>
-    <meta name="description" content="Synced 3D multiplayer upright Gomoku (Five in a Row) board with a reset button for AltspaceVR (altvr.app) and BanterVR spaces. Drop-in <script> tag setup.">
+    <meta name="description" content="Synced 3D multiplayer upright Gomoku (Five in a Row) board with seat locking for AltspaceVR (altvr.app) and BanterVR spaces. Drop-in <script> tag setup.">
     <meta name="keywords" content="VR Gomoku, Five in a Row VR, AltspaceVR Gomoku, BanterVR Gomoku, 3D multiplayer Gomoku board, FireRat">
     <meta name="author" content="FireRat">
     <meta name="robots" content="index, follow">
@@ -32,7 +32,7 @@
       "name": "3D Gomoku (Five in a Row) for AltspaceVR & BanterVR",
       "url": "https://gomoku.firer.at/",
       "image": "https://cdn.sidequestvr.com/file/4763919/altspace-photo-20261027-212245-b2ba.jpg",
-      "description": "Synced 3D multiplayer upright Gomoku (Five in a Row) board with a reset button for AltspaceVR (altvr.app) and BanterVR spaces.",
+      "description": "Synced 3D multiplayer upright Gomoku (Five in a Row) board with seat locking for AltspaceVR (altvr.app) and BanterVR spaces.",
       "genre": ["Board Game", "Strategy Game", "Multiplayer VR"],
       "gamePlatform": ["AltspaceVR", "BanterVR"],
       "playMode": "MultiPlayer",
@@ -107,12 +107,12 @@
         <div class="code-header">Script tag</div>
         <pre><code>&lt;script src=&quot;https://gomoku.firer.at/Gomoku.js&quot; position=&quot;0 1.5 -3&quot; scale=&quot;0.8&quot; board-size=&quot;19&quot;&gt;&lt;/script&gt;</code></pre>
         <p>All the settings are listed on <a href="https://github.com/FireRat666/Banter-Gomoku#settings" target="_blank">GitHub</a>.</p>
-        <p>A position of <code>0 0 0</code> means automatic: the reset button and turn sign sit in their default spots next to the board, which follow <code>board-size</code>. Any other value places them relative to the board.</p>
+        <p>A position of <code>0 0 0</code> means automatic: the UI panel sits just above the board, which follows <code>board-size</code>. Any other value places it relative to the board.</p>
       </section>
 
       <section class="info-block">
         <h2>Features</h2>
-        <ul><li>Any board size</li><li>Reset button</li><li>Several independent boards in one world</li></ul>
+        <ul><li>Any board size</li><li>A turn panel with seats, Reset and Mute</li><li>Seat locking</li><li>Switches itself off when you are far away</li><li>Several independent boards in one world</li></ul>
       </section>
 
       <section class="info-block">
@@ -122,7 +122,7 @@
     </main>
 
     <footer>
-      <p>Synced multiplayer upright Gomoku (five in a row) board with a reset button. Open <a href="https://gomoku.firer.at">gomoku.firer.at</a> as a space in Altspace or Banter to try it.</p>
+      <p>Synced multiplayer upright Gomoku (five in a row) board with seat locking. Open <a href="https://gomoku.firer.at">gomoku.firer.at</a> as a space in Altspace or Banter to try it.</p>
       <p>&copy; <span class="fire-year"></span> <a href="https://firer.at/">FireR.at</a></p>
     </footer>
   </div>
@@ -184,7 +184,7 @@
     -->
     <!-- snippet section -->
     <bs-snippet name="gomoku" title="Gomoku"
-      description="Synced multiplayer upright Gomoku (five in a row) board with a reset button."
+      description="Synced multiplayer upright Gomoku (five in a row) board with seat locking."
       script="https://gomoku.firer.at/snippet.js"
       room=""
       position="0 1.5 2"
@@ -194,6 +194,8 @@
       lit="true"
       add-lights="false"
       turn-cooldown="5"
+      lock-timeout="90"
+      cull-distance="20"
       sound-volume="0.4"
       sound-near="2.5"
       sound-far="10"
@@ -201,12 +203,6 @@
       hide-board="false"
       use-custom-models="true"
       use-ao-baking="false"
-      reset-position="0 0 0"
-      reset-rotation="0 0 0"
-      reset-scale="1"
-      mute-position="0 0 0"
-      mute-rotation="0 0 0"
-      mute-scale="1"
       scoreboard-position="0 0 0"
       scoreboard-rotation="0 0 0"
       scoreboard-scale="1">
